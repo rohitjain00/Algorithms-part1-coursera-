@@ -26,4 +26,5 @@ public class BruteCollinearPoints {
     public LineSegment[] segments() {
         return (LineSegment[]) Linesegments.toArray();
     }                // the line segments
+
 }

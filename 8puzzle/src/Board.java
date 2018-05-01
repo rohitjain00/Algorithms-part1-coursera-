@@ -1,14 +1,11 @@
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Board {
     private int[][] board;
     private int boardSize;
     private int moves = 0;
     private int outOfPlace;
-    private Board[] neighbourBoards;
+    private ArrayList<Board> neighbourBoards;
     private int xyTo1D(int x, int y) {
         return (x * boardSize) + y + 1;
     }
@@ -55,8 +52,9 @@ public class Board {
         return outOfPlace == 0;
     }               // is this board the goal board?
 
-    public int[][] twin() {
-        int[][] newBoard = new int[this.boardSize][this.boardSize];
+    public Board twin() {
+
+        int[][] newBoardBlocks = new int[this.boardSize][this.boardSize];
         int x = 0,y = 0;
         for (int i = 0; i < this.boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
@@ -64,7 +62,7 @@ public class Board {
                     x = i;
                     y = j;
                 }
-                newBoard[i][j] = this.board[i][j];
+                newBoardBlocks[i][j] = this.board[i][j];
             }
         }
 
@@ -75,51 +73,55 @@ public class Board {
 
             if (i == 1) { // MOVE LEFT
                 if (x-1 >= 0) {
-                    int temp = newBoard[x - 1][y];
-                    newBoard[x - 1][y] = 0;
-                    newBoard[x][y] = temp;
+                    int temp = newBoardBlocks[x - 1][y];
+                    newBoardBlocks[x - 1][y] = 0;
+                    newBoardBlocks[x][y] = temp;
                     moveMade = true;
                     moves ++;
                 }
             } else if(i == 2){ // MOVE UP
                 if (y-1 >= 0) {
-                    int temp = newBoard[x - 1][y];
-                    newBoard[x - 1][y] = 0;
-                    newBoard[x][y] = temp;
+                    int temp = newBoardBlocks[x - 1][y];
+                    newBoardBlocks[x - 1][y] = 0;
+                    newBoardBlocks[x][y] = temp;
                     moveMade = true;
                     moves ++;
                 }
             } else if (i == 3) { // MOVE RIGHT
                 if (x + 1 < this.boardSize) {
-                    int temp = newBoard[x + 1][y];
-                    newBoard[x + 1][y] = 0;
-                    newBoard[x][y] = temp;
+                    int temp = newBoardBlocks[x + 1][y];
+                    newBoardBlocks[x + 1][y] = 0;
+                    newBoardBlocks[x][y] = temp;
                     moveMade = true;
                     moves ++;
                 }
             } else if (i == 4){
                 if (y+1 < this.boardSize) {
-                    int temp = newBoard[x - 1][y];
-                    newBoard[x - 1][y] = 0;
-                    newBoard[x][y] = temp;
+                    int temp = newBoardBlocks[x - 1][y];
+                    newBoardBlocks[x - 1][y] = 0;
+                    newBoardBlocks[x][y] = temp;
                     moveMade = true;
                     moves ++;
                 }
             }
         }
+        Board latestBoard = new Board(newBoardBlocks);
+        neighbourBoards.add(latestBoard);
+        return latestBoard;
 
-        return newBoard;
 
-
-    }                   // a board that is obtained by exchanging any pair of blocks
+    }
+    // a board that is obtained by exchanging any pair of blocks
     public boolean equals(Object y) {
         if (y == null) {
-            throw new IllegalArgumentException();
+            return false;
         }
         return (this == y);
     }       // does this board equal y?
+
+
     public Iterable<Board> neighbors() {
-        return Arrays.asList(neighbourBoards);
+        return () -> neighbourBoards.iterator();
 
     }     // all neighboring boards
     public String toString() {

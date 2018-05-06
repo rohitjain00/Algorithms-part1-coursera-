@@ -1,13 +1,11 @@
-import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.algs4.RectHV;
-import edu.princeton.cs.algs4.SET;
-import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.*;
 
 public class KdTree {
     private static final boolean RED   = true;
     private static final boolean BLACK = false;
     private KdNode root;
     private nearestPT nearestPT;
+    private KdNode currNode;
 
     private static class nearestPT {
         private Point2D point;
@@ -28,18 +26,13 @@ public class KdTree {
             color = c;
         }
 
-        public boolean isRed() {
-            return this.color;
-        }
 
-        public boolean isVertical() {
-            return this.vertical;
-        }
     }
 
 
     public         KdTree()  {
         this.root = null;
+        this.currNode = null;
     }
     // construct an empty set of point
 
@@ -60,31 +53,52 @@ public class KdTree {
         return count;
     }
     public void insert(Point2D p) {
-        if (p == null) {
-            throw new java.lang.NullPointerException();
-        }
-        root = putx(root, p);
+        System.out.println("Insert function started");
+        root = insertRec(root, p);
 
     }// add the point to the set (if it is not already in the set)
 
-    private KdNode putx(KdNode node, Point2D key) {
-        if (node == null) {
-            return new KdNode(key, true,true);
+    private KdNode insertRec(KdNode node, Point2D key) {
+            if (node == null) {
+                System.out.println("New node formed");
+                node = new KdNode(key,true,true);
+                return node;
+            }
+
+
+            else if (node.vertical) {
+                if (node.key.x() > key.x()) {
+                    if (node.left!= null) {
+                        currNode = node.left;
+                    }
+                    System.out.println("Left");
+                    node.left = insertRec(node.right, key);
+                } else {
+                    if (node.right!= null) {
+                        currNode = node.right;
+                    }
+                    node.right = insertRec(node.right, key);
+                }
+            }
+            else {
+                if (node.key.y() > key.y()) {
+                    if (node.left!= null) {
+                        currNode = node.left;
+                    }
+                    System.out.println("Left1");
+
+                    node.left = insertRec(node.right, key);
+                } else {
+                    if (node.right!= null) {
+                        currNode = node.right;
+                    }
+                    System.out.println("Right1");
+
+                    node.right = insertRec(node.left, key);
+                }
+            }
+            return node;
         }
-
-        // if already in, return it
-        if (node.key.x() == key.x() && node.key.y() == key.y()) return node;
-
-        // else, insert it where corresponds (left - right recursive call)
-        if (node.vertical && key.x() < node.key.x() || !node.vertical && key.y() < node.key.y())
-            node.left = putx(node.left, key);
-        else
-            node.right = putx(node.right, key);
-
-        return node;
-        //to implement the correction of red line lean
-    }
-
 
 
     public           boolean contains(Point2D p) {

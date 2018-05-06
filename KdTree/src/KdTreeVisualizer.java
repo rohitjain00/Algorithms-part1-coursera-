@@ -7,6 +7,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class KdTreeVisualizer {
 
     public static void main(String[] args) {
+        int count = 0;
         RectHV rect = new RectHV(0.0, 0.0, 1.0, 1.0);
         StdDraw.enableDoubleBuffering();
         KdTree kdtree = new KdTree();
@@ -22,9 +23,6 @@ public class KdTreeVisualizer {
                     StdDraw.clear();
                     kdtree.draw();
                     StdDraw.show();
-                    if (kdtree.contains(p)) {
-                        System.out.println("Contains!!");
-                    }
                 }
             }
             StdDraw.pause(20);
